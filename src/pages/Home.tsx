@@ -1,11 +1,11 @@
 // import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
-import { useState } from "react"
+// import { useState } from "react"
 import { Packakges } from "../utils/constants"
 import PackageCard from "../components/PackageCard"
 
 const Home = () => {
-  const [active, setActive] = useState(0)
+  // const [active, setActive] = useState(0)
   
   return(
     <div>
@@ -24,7 +24,7 @@ const Home = () => {
       </div>
 
       {/* =================== MAIN PAGE ====================== */}
-      <div className="py-20 px-3">
+      <div className="py-20 px-3 overflow-y-scroll home">
         <div>
           <p className="font-bold text-3xl text-center md:text-5xl text-white">INVESTMENT OFFERS</p>
           <p className="text-white text-center py-3 text-sm md:text-base">
@@ -44,9 +44,9 @@ const Home = () => {
               {
                 Packakges.map((item, index) => (
                   <div
-                    onMouseEnter={() => setActive(index)}
+                    // onMouseEnter={() => setActive(index)}
                   >
-                    <PackageCard key={index} active={index === active} packageMode={item} />
+                    <PackageCard key={index} packageMode={item} />
                   </div>
                 ))
               }

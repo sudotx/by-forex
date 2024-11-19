@@ -16,3 +16,8 @@ body{
   width: 0;
   scroll-behavior: smooth;
 }
+
+.home::-webkit-scrollbar {
+  width: 0;
+  scroll-behavior: smooth;
+}

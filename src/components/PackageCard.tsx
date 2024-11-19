@@ -1,10 +1,10 @@
 import { BiCheck } from "react-icons/bi"
 import { Package } from "../utils/constants"
 
-const PackageCard = ({active, packageMode}:{active:boolean, packageMode: Package}) => {
+const PackageCard = ({packageMode}:{packageMode: Package}) => {
   return (
     <div
-      className={`p-4 ${active ? 'scale-105 border-4 border-neon shadow-md shadow-primary' : ''} transition-transform duration-300 w-[300px] border-2 border-primary  rounded-xl`}
+      className={`p-4 cursor-pointer scale-105 w-[300px] border-2 border-primary  rounded-xl`}
     >
       <div>
         <p className="text-primary text-2xl font-semibold capitalize">{packageMode.package}</p>
@@ -34,7 +34,7 @@ const PackageCard = ({active, packageMode}:{active:boolean, packageMode: Package
       </div>
       <div className="mt-5">
         <button
-          className={`w-full py-2 rounded-full ${active ? 'bg-primary text-white shadow-md' : 'bg-transparent text-primary'} transition-colors border-2 shadow-primary font-bold border-primary duration-300`}
+          className={`w-full py-2 rounded-full bg-transparent text-primary transition-colors border-2 shadow-primary font-bold border-primary duration-300`}
         >
           Buy ${packageMode.amount}
         </button>
