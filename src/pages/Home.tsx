@@ -24,7 +24,7 @@ const Home = () => {
       </div>
 
       {/* =================== MAIN PAGE ====================== */}
-      <div className="py-20 px-3 overflow-y-scroll home">
+      <div className="py-20 px-3 overflow-y-auto h-full w-full home">
         <div>
           <p className="font-bold text-3xl text-center md:text-5xl text-white">INVESTMENT OFFERS</p>
           <p className="text-white text-center py-3 text-sm md:text-base">
