@@ -55,7 +55,7 @@ const Home = () => {
         </div>
 
         {/* ========= FOOTER ======== */}
-        <div className="flex w-full text-center justify-center">
+        <div className="flex w-full text-center absolute bottom-0 justify-center">
           <p className="text-primary text-sm">&copy; {new Date().getFullYear()} ByForex. All rights reserved.</p>
         </div>
       </div>
