@@ -2,6 +2,10 @@ import { BiCheck } from "react-icons/bi"
 import { Package } from "../utils/constants"
 
 const PackageCard = ({packageMode}:{packageMode: Package}) => {
+  const formatNumberWithCommas = (number: number) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+  
   return (
     <div
       className={`p-4 cursor-pointer scale-105 w-[300px] border-2 border-primary  rounded-xl`}
@@ -36,7 +40,7 @@ const PackageCard = ({packageMode}:{packageMode: Package}) => {
         <button
           className={`w-full py-2 rounded-full bg-transparent text-primary transition-colors border-2 shadow-primary font-bold border-primary duration-300`}
         >
-          Buy ${packageMode.amount}
+          Buy ${formatNumberWithCommas(packageMode.amount)}
         </button>
       </div>
     </div>
