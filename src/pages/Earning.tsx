@@ -7,11 +7,11 @@ const Earning = () => {
   
   const { isConnected, address } = useAccount();
 
-  // useEffect(() => {
-  //   if (!isConnected) {
-  //     navigate("/");
-  //   }
-  // }, [isConnected, navigate]);
+  useEffect(() => {
+    if (!isConnected) {
+      navigate("/");
+    }
+  }, [isConnected, navigate]);
 
   const maskAddress = (address: string) => {
     if (address.length <= 8) return address;
