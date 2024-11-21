@@ -72,6 +72,16 @@ const Investments = () => {
           </div>
         </div>
 
+        <div>
+          <p className="text-2xl py-4 md:text-4xl text-white font-bold">Referral link</p>
+          <div className=" bg-white w-full rounded-lg py-5 px-3 flex flex-col md:flex-row gap-5 ">
+            <div className="w-full">
+              <input className="w-full border-2 rounded-md border-black h-12 text-lg text-center outline-none font-semibold" type="text" />
+            </div>
+            <div className="flex w-full justify-end"><button className="text-white text-xl font-semibold bg-primary w-full md:w-fit py-2 px-4 rounded-md">Copy</button></div>
+          </div>
+        </div>
+
       </div>
 
     </div>
