@@ -3,25 +3,28 @@ import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { Packakges } from "../utils/constants"
 import PackageCard from "../components/PackageCard"
 import { useNavigate } from "react-router-dom"
+import { useAccount } from "wagmi"
 // import { Link } from "react-router-dom"
 
 const Home = () => {
   // const [active, setActive] = useState(0)
   const navigate = useNavigate();
 
+  const { isConnected } = useAccount();
+
   const goDashboard = () => {
-    navigate('/dashboard')
+    navigate('/investments')
   }
 
   
 
   return (
     <div>
-      <div className="h-screen w-full absolute top-0 left-0 flex justify-center flex-col items-center">
+      <div className=" w-full fixed top-0 left-0 flex justify-center flex-col items-center">
         <div className="md:-top-10 -top-5 absolute">
           <img src="/svgs/OFF.svg" alt="off img" />
         </div>
-        <div className="md:-bottom-10 -bottom-5 absolute">
+        <div className="md:-bottom-10 -bottom-5 fixed">
           <img src="/svgs/25%.svg" alt="off img" />
         </div>
         <div className="absolute top-0 left-0 h-screen w-full -z-50">
@@ -32,15 +35,15 @@ const Home = () => {
       </div>
 
       {/* =================== MAIN PAGE ====================== */}
-      <div className="py-20 px-3 overflow-y-auto h-screen w-full home">
+      <div className="py-20 md:py-32 px-3 overflow-y-auto h-screen w-full home">
         <div>
           <p className="font-bold text-2xl text-center md:text-5xl text-white">INVESTMENT OFFERS</p>
           <p className="text-white px-2 py-3 text-sm md:text-base">
             ByForex is a fully decengtralized, web3-based investment platform. The platform will offer users tiered investment packages and income streams through smart contracts, aiming for transparency and automation in managing investment pools and Referral-based incomes. The project emphazises a structured investment approach where users must progress sequentially through the investment packages.
           </p>
           <div className="flex w-full justify-center gap-3 py-3">
-            <button onClick={goDashboard} className="text-primary border-2 scale-[1.01] rounded-full px-8 py-2 border-primary">Dashboard</button>
-            <ConnectButton />
+            <button onClick={goDashboard} className="text-primary border-2 scale-[1.01] rounded-full px-8 py-2 border-primary">Investments</button>
+            {!isConnected && <ConnectButton />}
           </div>
         </div>
 

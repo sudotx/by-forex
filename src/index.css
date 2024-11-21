@@ -9,7 +9,7 @@
 
 body{
 /* background: linear-gradient(to right, #ff7e5f, #feb47b, #ff7e5f); */
-@apply bg-gradient-to-r from-secondary to-secondary h-screen overflow-hidden w-full;
+@apply bg-gradient-to-r from-secondary to-secondary w-full;
 }
 
 .package::-webkit-scrollbar {

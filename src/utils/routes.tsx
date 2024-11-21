@@ -1,8 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Home from "../pages/Home";
-// import Login from "../pages/Login";
-import Earning from "../pages/Earning";
-// import Claim from "../pages/Claim";
+import Investments from "../pages/Investments";
 
 export const route = createBrowserRouter([
   {
@@ -14,8 +12,8 @@ export const route = createBrowserRouter([
   //   element: <Login />
   // },
   {
-    path: "dashboard",
-    element: <Earning />
+    path: "investments",
+    element: <Investments />
   },
   // {
   //   path: "claims",
