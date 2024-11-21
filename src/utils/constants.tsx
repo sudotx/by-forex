@@ -23,47 +23,47 @@ export const Packakges: Package[] = [
   },
   {
     package: "standard",
-    level: 1,
+    level: 4,
     amount: 160
   },
   {
     package: "standard",
-    level: 2,
+    level: 5,
     amount: 320
   },
   {
     package: "standard",
-    level: 3,
+    level: 6,
     amount: 640
   },
   {
     package: "standard",
-    level: 4,
+    level: 7,
     amount: 1280
   },
   {
     package: "premium",
-    level: 1,
+    level: 8,
     amount: 2560
   },
   {
     package: "premium",
-    level: 2,
+    level: 9,
     amount: 5120
   },
   {
     package: "premium",
-    level: 3,
+    level: 10,
     amount: 10240
   },
   {
     package: "premium",
-    level: 4,
+    level: 11,
     amount: 20480
   },
   {
     package: "premium",
-    level: 5,
+    level: 12,
     amount: 40960
   }
 ]

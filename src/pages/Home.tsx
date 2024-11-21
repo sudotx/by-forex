@@ -1,11 +1,10 @@
-// import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
-// import { useState } from "react"
+import { useState } from "react"
 import { Packakges } from "../utils/constants"
 import PackageCard from "../components/PackageCard"
 
 const Home = () => {
-  // const [active, setActive] = useState(0)
+  const [active, setActive] = useState(0)
   
   return(
     <div>

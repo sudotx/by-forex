@@ -1,11 +1,58 @@
-import { BiCheck } from "react-icons/bi"
-import { Package } from "../utils/constants"
+import { useEffect, useState } from "react";
+import { BiCheck } from "react-icons/bi";
+import { parseAbi } from "viem";
+import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { Package } from "../utils/constants";
+import { byForexABI } from "../../abi"
 
-const PackageCard = ({packageMode}:{packageMode: Package}) => {
+const PackageCard = ({ packageMode }: { packageMode: Package }) => {
+  const [isApproved, setIsApproved] = useState(false);
+
   const formatNumberWithCommas = (number: number) => {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
-  
+
+  const { address } = useAccount()
+  const { data: hash, writeContract, error } = useWriteContract()
+  const { isLoading: isConfirming } =
+    useWaitForTransactionReceipt({
+      hash,
+    })
+
+  const handleInvest = async () => {
+    try {
+      writeContract({
+        abi: byForexABI.abi,
+        address: byForexABI.address as `0x${string}`,
+        functionName: 'invest',
+        args: [BigInt(packageMode.level), BigInt(packageMode.amount * 1e18)],
+      });
+    } catch (error) {
+      console.error("Deposit failed:", error);
+    }
+  };
+
+  const handleApprove = () => {
+    try {
+      writeContract({
+        address: '0x93323bB3896C5eff97320BC63E4FbccB41D0C8C4', // USDT Contract Address
+        abi: parseAbi(['function approve(address spender, uint256 amount)']),
+        functionName: 'approve',
+        args: [byForexABI.address as `0x`, BigInt(packageMode.amount * 1e18)],
+      })
+      setIsApproved(true);
+    } catch (error) {
+      console.log("Approval Failed", error);
+    }
+  }
+
+  useEffect(() => {
+    if (error) {
+      console.log('Transaction error:', error);
+    }
+    console.log("Address", address);
+  }, [error]);
+
   return (
     <div
       className={`p-4 cursor-pointer scale-105 w-[300px] border-2 border-primary  rounded-xl`}
@@ -38,9 +85,11 @@ const PackageCard = ({packageMode}:{packageMode: Package}) => {
       </div>
       <div className="mt-5">
         <button
-          className={`w-full py-2 rounded-full bg-transparent text-primary transition-colors border-2 shadow-primary font-bold border-primary duration-300`}
+          onClick={!isApproved ? handleApprove : handleInvest}
+          disabled={isConfirming}
+          className={`w-full py-2 rounded-full bg-transparent text-primary transition-colors border-2 shadow-primary font-bold border-primary duration-300 hover:bg-primary hover:text-white ${isConfirming ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
-          Buy ${formatNumberWithCommas(packageMode.amount)}
+          {isConfirming ? 'Confirming...' : !isApproved ? `Approve ${formatNumberWithCommas(packageMode.amount)} USDT` : `Invest ${formatNumberWithCommas(packageMode.amount)} USDT`}
         </button>
       </div>
     </div>
