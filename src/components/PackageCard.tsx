@@ -19,31 +19,23 @@ const PackageCard = ({ packageMode }: { packageMode: Package }) => {
       hash,
     })
 
-  const handleInvest = async () => {
-    try {
-      writeContract({
-        abi: byForexABI.abi,
-        address: byForexABI.address as `0x${string}`,
-        functionName: 'invest',
-        args: [BigInt(packageMode.level), BigInt(packageMode.amount * 1e18)],
-      });
-    } catch (error) {
-      console.error("Deposit failed:", error);
-    }
+  const handleInvest = () => {
+    writeContract({
+      abi: byForexABI.abi,
+      address: byForexABI.address as `0x${string}`,
+      functionName: 'invest',
+      args: [BigInt(packageMode.level), BigInt(packageMode.amount * 1e18)],
+    });
   };
 
   const handleApprove = () => {
-    try {
-      writeContract({
-        address: '0x93323bB3896C5eff97320BC63E4FbccB41D0C8C4', // USDT Contract Address
-        abi: parseAbi(['function approve(address spender, uint256 amount)']),
-        functionName: 'approve',
-        args: [byForexABI.address as `0x`, BigInt(packageMode.amount * 1e18)],
-      })
-      setIsApproved(true);
-    } catch (error) {
-      console.log("Approval Failed", error);
-    }
+    writeContract({
+      address: '0x93323bB3896C5eff97320BC63E4FbccB41D0C8C4', // USDT Contract Address
+      abi: parseAbi(['function approve(address spender, uint256 amount)']),
+      functionName: 'approve',
+      args: [byForexABI.address as `0x`, BigInt(packageMode.amount * 1e18)],
+    })
+    setIsApproved(true);
   }
 
   useEffect(() => {
