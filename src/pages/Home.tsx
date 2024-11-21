@@ -6,8 +6,8 @@ import { Link } from "react-router-dom"
 
 const Home = () => {
   // const [active, setActive] = useState(0)
-  
-  return(
+
+  return (
     <div>
       <div className="h-screen w-full absolute top-0 left-0 flex justify-center flex-col items-center">
         <div className="md:-top-10 -top-5 absolute">
@@ -31,7 +31,7 @@ const Home = () => {
             ByForex is a fully decengtralized, web3-based investment platform. The platform will offer users tiered investment packages and income streams through smart contracts, aiming for transparency and automation in managing investment pools and Referral-based incomes. The project emphazises a structured investment approach where users must progress sequentially through the investment packages.
           </p>
           <div className="flex w-full justify-center gap-3 py-3">
-            <Link to="/dashboard" className="text-primary border-2 scale-[1.01] rounded-full px-8 py-2 border-primary">Dashboard</Link>
+            {/* <Link to="/dashboard" className="text-primary border-2 scale-[1.01] rounded-full px-8 py-2 border-primary">Dashboard</Link> */}
             <ConnectButton />
           </div>
         </div>
@@ -44,7 +44,7 @@ const Home = () => {
               {
                 Packakges.map((item, index) => (
                   <div
-                    // onMouseEnter={() => setActive(index)}
+                  // onMouseEnter={() => setActive(index)}
                   >
                     <PackageCard key={index} packageMode={item} />
                   </div>
@@ -59,7 +59,7 @@ const Home = () => {
           <p className="text-primary text-sm">&copy; {new Date().getFullYear()} ByForex. All rights reserved.</p>
         </div>
       </div>
-      
+
     </div>
   )
 }
