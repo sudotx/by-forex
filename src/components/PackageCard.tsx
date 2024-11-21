@@ -3,7 +3,7 @@ import { BiCheck } from "react-icons/bi";
 import { parseAbi } from "viem";
 import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { Package } from "../utils/constants";
-import { byForexABI } from "../../abi"
+import { byForexConfig } from "../../abi"
 
 const PackageCard = ({ packageMode }: { packageMode: Package }) => {
   const [isApproved, setIsApproved] = useState(false);
@@ -21,8 +21,8 @@ const PackageCard = ({ packageMode }: { packageMode: Package }) => {
 
   const handleInvest = () => {
     writeContract({
-      abi: byForexABI.abi,
-      address: byForexABI.address as `0x${string}`,
+      abi: byForexConfig.abi,
+      address: byForexConfig.address as `0x${string}`,
       functionName: 'invest',
       args: [BigInt(packageMode.level), BigInt(packageMode.amount * 1e18)],
     });
@@ -33,7 +33,7 @@ const PackageCard = ({ packageMode }: { packageMode: Package }) => {
       address: '0x93323bB3896C5eff97320BC63E4FbccB41D0C8C4', // USDT Contract Address
       abi: parseAbi(['function approve(address spender, uint256 amount)']),
       functionName: 'approve',
-      args: [byForexABI.address as `0x`, BigInt(packageMode.amount * 1e18)],
+      args: [byForexConfig.address as `0x`, BigInt(packageMode.amount * 1e18)],
     })
     setIsApproved(true);
   }
