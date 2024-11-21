@@ -1,10 +1,11 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit"
-import { useState } from "react"
+// import { useState } from "react"
 import { Packakges } from "../utils/constants"
 import PackageCard from "../components/PackageCard"
+import { Link } from "react-router-dom"
 
 const Home = () => {
-  const [active, setActive] = useState(0)
+  // const [active, setActive] = useState(0)
   
   return(
     <div>
@@ -30,7 +31,7 @@ const Home = () => {
             ByForex is a fully decengtralized, web3-based investment platform. The platform will offer users tiered investment packages and income streams through smart contracts, aiming for transparency and automation in managing investment pools and Referral-based incomes. The project emphazises a structured investment approach where users must progress sequentially through the investment packages.
           </p>
           <div className="flex w-full justify-center gap-3 py-3">
-            <button className="text-primary border-2 rounded-full px-8 py-2 border-primary">Learn more</button>
+            <Link to="/dashboard" className="text-primary border-2 scale-[1.01] rounded-full px-8 py-2 border-primary">Dashboard</Link>
             <ConnectButton />
           </div>
         </div>
