@@ -3,6 +3,7 @@ import { BiCheck } from "react-icons/bi";
 import { parseAbi } from "viem";
 import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { Package } from "../utils/constants";
+import { byForexABI } from "../../abi"
 
 const PackageCard = ({ packageMode }: { packageMode: Package }) => {
   const [isApproved, setIsApproved] = useState(false);
@@ -10,7 +11,6 @@ const PackageCard = ({ packageMode }: { packageMode: Package }) => {
   const formatNumberWithCommas = (number: number) => {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
-  const tokenId = ""
 
   const { address } = useAccount()
   const { data: hash, writeContract, error } = useWriteContract()
@@ -19,24 +19,27 @@ const PackageCard = ({ packageMode }: { packageMode: Package }) => {
       hash,
     })
 
-  const handleBuyPackage = () => {
-    writeContract({
-      address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-      abi: parseAbi(['function mint(uint256 tokenId)']),
-      functionName: 'mint',
-      args: [BigInt(tokenId)],
-    })
-  }
+  const handleInvest = async () => {
+    try {
+      writeContract({
+        abi: byForexABI.abi,
+        address: byForexABI.address as `0x${string}`,
+        functionName: 'invest',
+        args: [BigInt(packageMode.level), BigInt(packageMode.amount * 1e18)],
+      });
+    } catch (error) {
+      console.error("Deposit failed:", error);
+    }
+  };
 
   const handleApprove = () => {
     try {
       writeContract({
-        address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-        abi: parseAbi(['function mint(uint256 tokenId)']),
-        functionName: 'mint',
-        args: [BigInt(tokenId)],
+        address: '0x93323bB3896C5eff97320BC63E4FbccB41D0C8C4', // USDT Contract Address
+        abi: parseAbi(['function approve(address spender, uint256 amount)']),
+        functionName: 'approve',
+        args: [byForexABI.address as `0x`, BigInt(packageMode.amount * 1e18)],
       })
-
       setIsApproved(true);
     } catch (error) {
       console.log("Approval Failed", error);
@@ -82,10 +85,11 @@ const PackageCard = ({ packageMode }: { packageMode: Package }) => {
       </div>
       <div className="mt-5">
         <button
-          onClick={handleBuyPackage}
-          className={`w-full py-2 rounded-full bg-transparent text-primary transition-colors border-2 shadow-primary font-bold border-primary duration-300 hover:bg-primary hover:text-white`}
+          onClick={!isApproved ? handleApprove : handleInvest}
+          disabled={isConfirming}
+          className={`w-full py-2 rounded-full bg-transparent text-primary transition-colors border-2 shadow-primary font-bold border-primary duration-300 hover:bg-primary hover:text-white ${isConfirming ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
-          {hash ? 'Transaction Confirmed' : `Buy $${formatNumberWithCommas(packageMode.amount)}`}
+          {isConfirming ? 'Confirming...' : !isApproved ? `Approve ${formatNumberWithCommas(packageMode.amount)} USDT` : `Invest ${formatNumberWithCommas(packageMode.amount)} USDT`}
         </button>
       </div>
     </div>
