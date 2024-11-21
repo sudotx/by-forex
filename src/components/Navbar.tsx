@@ -1,6 +1,6 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit"
 // import { BiMenu } from "react-icons/bi"
-import { Link } from "react-router-dom"
+// import { Link } from "react-router-dom"
 // import { co\ }
 
 const Navbar = () => {

@@ -2,7 +2,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit"
 // import { useState } from "react"
 import { Packakges } from "../utils/constants"
 import PackageCard from "../components/PackageCard"
-import { Link } from "react-router-dom"
+// import { Link } from "react-router-dom"
 
 const Home = () => {
   // const [active, setActive] = useState(0)

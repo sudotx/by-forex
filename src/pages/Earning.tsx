@@ -1,19 +1,19 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom"
-import { useAccount, useReadContracts } from "wagmi";
-import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
-import { parseAbi } from "viem";
+import { useAccount } from "wagmi";
+import { useWriteContract } from "wagmi";
+// import { parseAbi } from "viem";
 import { byForexConfig } from "../../abi";
 
 const Earning = () => {
   const navigate = useNavigate();
 
   const { isConnected, address } = useAccount();
-  const { data: hash, writeContract, error } = useWriteContract()
-  const { isLoading: isConfirming } =
-    useWaitForTransactionReceipt({
-      hash,
-    })
+  const { writeContract, error } = useWriteContract()
+  // const { isLoading: isConfirming } =
+  //   useWaitForTransactionReceipt({
+  //     hash,
+  //   })
 
   useEffect(() => {
     if (!isConnected) {
@@ -26,30 +26,30 @@ const Earning = () => {
     return `${address.slice(0, 4)}****${address.slice(-4)}`;
   };
 
-  const { data } = useReadContracts({
-    allowFailure: false,
-    contracts: [
-      {
-        abi: byForexConfig.abi,
-        address: byForexConfig.address as `0x${string}`,
-        functionName: 'getUserBasicInfo',
-        args: [address]
-      },
-      {
-        abi: byForexConfig.abi,
-        address: byForexConfig.address as `0x${string}`,
-        functionName: 'getUserReferralInfo',
-        args: [address]
-      },
-      {
-        abi: byForexConfig.abi,
-        address: byForexConfig.address as `0x${string}`,
-        functionName: 'getUserEarningsInfo',
-        args: [address]
-      },
-    ],
-  })
-  const [basicData, referralData, earningsData] = data || []
+  // const { data } = useReadContracts({
+  //   allowFailure: false,
+  //   contracts: [
+  //     {
+  //       abi: byForexConfig.abi,
+  //       address: byForexConfig.address as `0x${string}`,
+  //       functionName: 'getUserBasicInfo',
+  //       args: [address]
+  //     },
+  //     {
+  //       abi: byForexConfig.abi,
+  //       address: byForexConfig.address as `0x${string}`,
+  //       functionName: 'getUserReferralInfo',
+  //       args: [address]
+  //     },
+  //     {
+  //       abi: byForexConfig.abi,
+  //       address: byForexConfig.address as `0x${string}`,
+  //       functionName: 'getUserEarningsInfo',
+  //       args: [address]
+  //     },
+  //   ],
+  // })
+  // const [basicData, referralData, earningsData] = data || []
 
   const handleWithdraw = () => {
     writeContract({
