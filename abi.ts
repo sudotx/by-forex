@@ -1,18 +1,7 @@
 export const byForexConfig = {
-    address: "0x252262c047526376E69F5b79297217E806166548",
+    address: "0x6C771b743996545Cd81e15F58eb03288479d6d8c",
     abi:
         [
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "_usdcTokenAddress",
-                        "type": "address"
-                    }
-                ],
-                "stateMutability": "nonpayable",
-                "type": "constructor"
-            },
             {
                 "inputs": [],
                 "name": "CantRenounceOwnership",
@@ -69,22 +58,6 @@ export const byForexConfig = {
             {
                 "inputs": [],
                 "name": "InvalidPackageProgression",
-                "type": "error"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "amount",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "limit",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "InvestmentLimitExceeded",
                 "type": "error"
             },
             {
@@ -205,6 +178,31 @@ export const byForexConfig = {
                     }
                 ],
                 "name": "Paused",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": true,
+                        "internalType": "address",
+                        "name": "user",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "userShare",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "PoolClaimed",
                 "type": "event"
             },
             {
@@ -378,108 +376,14 @@ export const byForexConfig = {
                 "type": "event"
             },
             {
-                "inputs": [],
-                "name": "INDIVIDUAL_POOL_PERCENTAGE",
-                "outputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "POOL_ALLOCATION_PERCENTAGE",
-                "outputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "POOL_COUNT",
-                "outputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "POOL_DISTRIBUTION_INTERVAL",
-                "outputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "REFERRAL_COMMISSION_PERCENTAGE",
-                "outputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "user",
-                        "type": "address"
-                    }
-                ],
-                "name": "calculateAvailableWithdrawal",
-                "outputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
                 "inputs": [
                     {
                         "internalType": "uint256",
                         "name": "poolId",
                         "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "requiredReferrals",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "requiredVolume",
-                        "type": "uint256"
                     }
                 ],
-                "name": "configurePoolEligibility",
+                "name": "claimPoolShare",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
@@ -533,10 +437,149 @@ export const byForexConfig = {
                 "type": "function"
             },
             {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "distributeToPools",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
                 "inputs": [],
                 "name": "emergencyWithdraw",
                 "outputs": [],
                 "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "packageId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "usdcAmount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "invest",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "pauseSystem",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_upline",
+                        "type": "address"
+                    }
+                ],
+                "name": "registerUser",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "renounceOwnership",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "newOwner",
+                        "type": "address"
+                    }
+                ],
+                "name": "transferOwnership",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "unpauseSystem",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "user",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "poolId",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "updatePoolEligibility",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "withdraw",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_usdcTokenAddress",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "nonpayable",
+                "type": "constructor"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "user",
+                        "type": "address"
+                    }
+                ],
+                "name": "calculateAvailableWithdrawal",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
                 "type": "function"
             },
             {
@@ -649,6 +692,47 @@ export const byForexConfig = {
                 "inputs": [
                     {
                         "internalType": "address",
+                        "name": "user",
+                        "type": "address"
+                    }
+                ],
+                "name": "getUserDashboardInfo",
+                "outputs": [
+                    {
+                        "components": [
+                            {
+                                "internalType": "uint256",
+                                "name": "totalIncomeClaim",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "availableIncomeClaim",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256[4]",
+                                "name": "poolsClaim",
+                                "type": "uint256[4]"
+                            },
+                            {
+                                "internalType": "bool[4]",
+                                "name": "isPoolEligible",
+                                "type": "bool[4]"
+                            }
+                        ],
+                        "internalType": "struct byForex.UserDashboardInfo",
+                        "name": "",
+                        "type": "tuple"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
                         "name": "_user",
                         "type": "address"
                     }
@@ -668,6 +752,40 @@ export const byForexConfig = {
                     {
                         "internalType": "uint256",
                         "name": "currentPackageLevel",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "user",
+                        "type": "address"
+                    }
+                ],
+                "name": "getUserInvestmentInfo",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "currentPackage",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "highestPackage",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "lastInvestmentTime",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "totalInvested",
                         "type": "uint256"
                     }
                 ],
@@ -709,21 +827,16 @@ export const byForexConfig = {
                 "type": "function"
             },
             {
-                "inputs": [
+                "inputs": [],
+                "name": "INDIVIDUAL_POOL_PERCENTAGE",
+                "outputs": [
                     {
                         "internalType": "uint256",
-                        "name": "packageId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "usdcAmount",
+                        "name": "",
                         "type": "uint256"
                     }
                 ],
-                "name": "invest",
-                "outputs": [],
-                "stateMutability": "nonpayable",
+                "stateMutability": "view",
                 "type": "function"
             },
             {
@@ -821,19 +934,51 @@ export const byForexConfig = {
             },
             {
                 "inputs": [],
-                "name": "pauseSystem",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [],
                 "name": "paused",
                 "outputs": [
                     {
                         "internalType": "bool",
                         "name": "",
                         "type": "bool"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "POOL_ALLOCATION_PERCENTAGE",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "POOL_COUNT",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "POOL_DISTRIBUTION_INTERVAL",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
                     }
                 ],
                 "stateMutability": "view",
@@ -868,29 +1013,27 @@ export const byForexConfig = {
                         "internalType": "uint256",
                         "name": "requiredVolume",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "isActive",
+                        "type": "bool"
                     }
                 ],
                 "stateMutability": "view",
                 "type": "function"
             },
             {
-                "inputs": [
+                "inputs": [],
+                "name": "REFERRAL_COMMISSION_PERCENTAGE",
+                "outputs": [
                     {
-                        "internalType": "address",
-                        "name": "_upline",
-                        "type": "address"
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
                     }
                 ],
-                "name": "registerUser",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "renounceOwnership",
-                "outputs": [],
-                "stateMutability": "nonpayable",
+                "stateMutability": "view",
                 "type": "function"
             },
             {
@@ -936,57 +1079,6 @@ export const byForexConfig = {
                     }
                 ],
                 "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "newOwner",
-                        "type": "address"
-                    }
-                ],
-                "name": "transferOwnership",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "unpauseSystem",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "user",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "poolId",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "updatePoolEligibility",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "user",
-                        "type": "address"
-                    }
-                ],
-                "name": "updatePoolEligibility",
-                "outputs": [],
-                "stateMutability": "nonpayable",
                 "type": "function"
             },
             {
@@ -1061,22 +1153,19 @@ export const byForexConfig = {
                         "internalType": "uint256",
                         "name": "highestPackage",
                         "type": "uint256"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [
+                    },
                     {
                         "internalType": "uint256",
-                        "name": "amount",
+                        "name": "totalBalance",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "poolEarnings",
                         "type": "uint256"
                     }
                 ],
-                "name": "withdraw",
-                "outputs": [],
-                "stateMutability": "nonpayable",
+                "stateMutability": "view",
                 "type": "function"
             }
         ]
