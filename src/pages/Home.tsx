@@ -1,13 +1,10 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit"
-// import { useState } from "react"
 import { Packakges } from "../utils/constants"
 import PackageCard from "../components/PackageCard"
 import { useNavigate } from "react-router-dom"
 import { useAccount } from "wagmi"
-// import { Link } from "react-router-dom"
 
 const Home = () => {
-  // const [active, setActive] = useState(0)
   const navigate = useNavigate();
 
   const { isConnected } = useAccount();
@@ -15,8 +12,6 @@ const Home = () => {
   const goDashboard = () => {
     navigate('/investments')
   }
-
-  
 
   return (
     <div>

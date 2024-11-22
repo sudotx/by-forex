@@ -462,24 +462,8 @@ export const byForexConfig = {
                 "type": "function"
             },
             {
-                "inputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "poolId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "requiredReferrals",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "requiredVolume",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "configurePoolEligibility",
+                "inputs": [],
+                "name": "claimPoolRewards",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
@@ -649,6 +633,47 @@ export const byForexConfig = {
                 "inputs": [
                     {
                         "internalType": "address",
+                        "name": "user",
+                        "type": "address"
+                    }
+                ],
+                "name": "getUserDashboardInfo",
+                "outputs": [
+                    {
+                        "components": [
+                            {
+                                "internalType": "uint256",
+                                "name": "totalIncomeClaim",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "availableIncomeClaim",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256[4]",
+                                "name": "poolsClaim",
+                                "type": "uint256[4]"
+                            },
+                            {
+                                "internalType": "bool[4]",
+                                "name": "isPoolEligible",
+                                "type": "bool[4]"
+                            }
+                        ],
+                        "internalType": "struct byForex.UserDashboardInfo",
+                        "name": "",
+                        "type": "tuple"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
                         "name": "_user",
                         "type": "address"
                     }
@@ -668,6 +693,40 @@ export const byForexConfig = {
                     {
                         "internalType": "uint256",
                         "name": "currentPackageLevel",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "user",
+                        "type": "address"
+                    }
+                ],
+                "name": "getUserInvestmentInfo",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "currentPackage",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "highestPackage",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "lastInvestmentTime",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "totalInvested",
                         "type": "uint256"
                     }
                 ],
@@ -969,19 +1028,6 @@ export const byForexConfig = {
                         "internalType": "uint256",
                         "name": "poolId",
                         "type": "uint256"
-                    }
-                ],
-                "name": "updatePoolEligibility",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "user",
-                        "type": "address"
                     }
                 ],
                 "name": "updatePoolEligibility",
