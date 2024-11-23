@@ -1,9 +1,14 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit"
+import { useEffect } from "react";
 import { useAccount, useDisconnect } from "wagmi"
 
 const Navbar = () => {
   const { isConnected } = useAccount();
   const { disconnect } = useDisconnect();
+
+  useEffect(() => {
+    console.log("Wallet connected", isConnected);
+  }, []);
   
   return (
     <div className="fixed top-0 w-full flex justify-between py-2 px-3 md:py-10 md:px-28 backdrop-blur-md z-40">
