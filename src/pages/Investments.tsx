@@ -8,17 +8,19 @@ const packages = [20, 40, 80, 160, 320, 640, 1280, 2560, 5120, 10240, 20480, 409
 const Investments = () => {
   const [isApproved, setIsApproved] = useState(false);
   const [investmentAmount, setInvestmentAmount] = useState(0);
-  const { address } = useAccount()
+  const { address, isConnected } = useAccount()
   const { data: hash, writeContract, error } = useWriteContract()
   const { isLoading: isConfirming } =
     useWaitForTransactionReceipt({
       hash,
     })
 
-  const [txStatus, setTxStatus] = useState<'idle' | 'pending' | 'success' | 'error'>('idle')
-  const [notification, setNotification] = useState('')
-
-  const isTransacting = isConfirming || txStatus === 'pending'
+  interface DashboardInfo {
+    availableIncomeClaim: bigint;
+    poolsClaim: bigint[];
+    isPoolEligible: boolean[];
+    totalIncomeClaim: bigint;
+  }
 
   const { data: dashInfo } = useReadContract({
     abi: byForexConfig.abi,
@@ -26,13 +28,20 @@ const Investments = () => {
     functionName: 'getUserDashboardInfo',
     args: [address],
   })
-  const { data: userInfo } = useReadContract({
-    abi: byForexConfig.abi,
-    address: byForexConfig.address as `0x${string}`,
-    functionName: 'users',
-    args: [address],
-  })
-  // console.log("dash data", dashInfo);
+
+  if (!dashInfo) {
+    return
+  }
+  console.log("dash data", (dashInfo as DashboardInfo));
+  const availableIncomeClaim = (dashInfo as DashboardInfo)?.availableIncomeClaim
+  const poolsClaim = (dashInfo as DashboardInfo)?.poolsClaim
+  const isPoolEligible = (dashInfo as DashboardInfo)?.isPoolEligible
+  const totalIncomeClaim = (dashInfo as DashboardInfo)?.totalIncomeClaim
+
+  console.log("availableIncomeClaim", availableIncomeClaim);
+  console.log("poolsClaim", poolsClaim);
+  console.log("isPoolEligible", isPoolEligible);
+  console.log("totalIncomeClaim", totalIncomeClaim);
 
   const handleInvest = () => {
     writeContract({
@@ -71,53 +80,12 @@ const Investments = () => {
     });
   };
 
-  const handleCreatePackage = (upLineAddress: string) => {
-    writeContract({
-      abi: byForexConfig.abi,
-      address: byForexConfig.address as `0x${string}`,
-      functionName: 'createPackage',
-      args: [BigInt(1), BigInt(1)],
-    });
-  };
-  const handleConfigurePoolRequirements = (upLineAddress: string) => {
-    writeContract({
-      abi: byForexConfig.abi,
-      address: byForexConfig.address as `0x${string}`,
-      functionName: 'createPackage',
-      args: [BigInt(1), BigInt(1)],
-    });
-  };
-  const handleDistributePoolIncome = (upLineAddress: string) => {
-    writeContract({
-      abi: byForexConfig.abi,
-      address: byForexConfig.address as `0x${string}`,
-      functionName: 'createPackage',
-      args: [BigInt(1), BigInt(1)],
-    });
-  };
-  const handleDistributeToPools = (upLineAddress: string) => {
-    writeContract({
-      abi: byForexConfig.abi,
-      address: byForexConfig.address as `0x${string}`,
-      functionName: 'createPackage',
-      args: [BigInt(1), BigInt(1)],
-    });
-  };
-
-  const handleUpdatePoolEligibility = (upLineAddress: string) => {
-    writeContract({
-      abi: byForexConfig.abi,
-      address: byForexConfig.address as `0x${string}`,
-      functionName: 'createPackage',
-      args: [BigInt(1), BigInt(1)],
-    });
-  };
-
   // Format BigInt to regular number with commas
   const formatAmount = (amount: number) => {
-    return (Number(amount) / 1e18).toLocaleString('en-US', {
-      maximumFractionDigits: 2
-    }).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return (Number(amount)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+  const formatBigInt = (amount: number | bigint) => {
+    return (Number(amount) / 1e18).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   useEffect(() => {
@@ -127,20 +95,11 @@ const Investments = () => {
     console.log("Address", address);
   }, [error]);
 
-
-
   useEffect(() => {
-    if (isConfirming) {
-      setTxStatus('pending')
-      setNotification('Transaction pending...')
-    } else if (hash) {
-      setTxStatus('success')
-      setNotification('Transaction successful!')
-    } else if (error) {
-      setTxStatus('error')
-      setNotification(error.message)
+    if (isConnected) {
+      handleRegister(address as `0x${string}`)
     }
-  }, [isConfirming, hash, error])
+  }, [address]);
 
   return (
     <div className="px-3 md:px-28 py-20 flex flex-col ">
@@ -169,7 +128,7 @@ const Investments = () => {
             </div>
             <button
               onClick={!isApproved ? handleApprove : handleInvest}
-              disabled={isTransacting || investmentAmount === 0}
+              disabled={isConfirming || investmentAmount === 0}
               className={`bg-primary w-full py-2 rounded-lg text-lg font-semibold text-white outline-none ${isConfirming ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               {isConfirming ? 'Confirming...' : !isApproved ? `Approve ${formatAmount(investmentAmount)} USDT` : `Invest ${formatAmount(investmentAmount)} USDT`}
@@ -182,22 +141,22 @@ const Investments = () => {
           <div className=" bg-white w-full rounded-lg py-5 px-3 flex flex-col gap-3 ">
             <div className="bg-neutral-200 flex justify-between p-2 rounded-lg">
               <p className="text-lg font-semibold my-auto">Pool 1</p>
-              <p className="text-primary">${dashInfo ? 1 : 0}</p>
+              <p className="text-primary">${poolsClaim ? formatBigInt(poolsClaim[0]) : 0}</p>
               <button className="rounded-lg border-2 border-primary text-primary py-1 px-3 font-semibold" onClick={() => { handlePoolClaim(1) }}>Claim</button>
             </div>
             <div className="bg-neutral-200 flex justify-between p-2 rounded-lg">
               <p className="text-lg font-semibold my-auto">Pool 2</p>
-              <p className="text-primary">${dashInfo ? 1 : 0}</p>
+              <p className="text-primary">${poolsClaim ? formatBigInt(poolsClaim[1]) : 0}</p>
               <button className="rounded-lg border-2 border-primary text-primary py-1 px-3 font-semibold" onClick={() => { handlePoolClaim(2) }}>Claim</button>
             </div>
             <div className="bg-neutral-200 flex justify-between p-2 rounded-lg">
               <p className="text-lg font-semibold my-auto">Pool 3</p>
-              <p className="text-primary">${dashInfo ? 1 : 0}</p>
+              <p className="text-primary">${poolsClaim ? formatBigInt(poolsClaim[2]) : 0}</p>
               <button className="rounded-lg border-2 border-primary text-primary py-1 px-3 font-semibold" onClick={() => { handlePoolClaim(3) }}>Claim</button>
             </div>
             <div className="bg-neutral-200 flex justify-between p-2 rounded-lg">
               <p className="text-lg font-semibold my-auto">Pool 4</p>
-              <p className="text-primary">${dashInfo ? 1 : 0}</p>
+              <p className="text-primary">${poolsClaim ? formatBigInt(poolsClaim[3]) : 0}</p>
               <button className="rounded-lg border-2 border-primary text-primary py-1 px-3 font-semibold" onClick={() => { handlePoolClaim(4) }}>Claim</button>
             </div>
           </div>
@@ -208,11 +167,11 @@ const Investments = () => {
           <div className=" bg-white w-full rounded-lg py-5 px-3 flex flex-col gap-5 ">
             <div className="flex justify-between">
               <p className="font-bold text-lg">Total income claim</p>
-              <p className="text-primary">${dashInfo ? 1 : 0}</p>
+              <p className="text-primary">${totalIncomeClaim ? formatBigInt(totalIncomeClaim) : 0}</p>
             </div>
             <div className="flex justify-between">
               <p className="font-bold text-lg">Available income claim</p>
-              <p className="text-primary">${dashInfo ? 1 : 0}</p>
+              <p className="text-primary">${availableIncomeClaim ? formatBigInt(availableIncomeClaim) : 0}</p>
             </div>
             <div className="flex w-full justify-end"><button className="text-white text-xl font-semibold bg-primary w-fit py-1 px-4 rounded-md">Claim</button></div>
           </div>
