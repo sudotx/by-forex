@@ -46,14 +46,13 @@ const Navbar = () => {
     args: [address],
   }) as { data: UserInfo }
 
+
   useEffect(() => {
-    if (userInfo[0] != "0x0000000000000000000000000000000000000000") {
-      return
-    }
-    if (isConnected && referralAddress && isValidAddress(referralAddress)) {
+    if (userInfo && userInfo[0] === "0x0000000000000000000000000000000000000000" && referralAddress && isValidAddress(referralAddress)) {
       handleRegister(referralAddress as `0x${string}`);
     }
-  }, [isConnected, referralAddress]);
+  }, [userInfo, referralAddress]);
+
 
   useEffect(() => {
     if (hash) {

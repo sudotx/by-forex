@@ -3,7 +3,7 @@ import { useState } from 'react'
 const Login = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
-  
+
   const setConnection = () => {
     setIsConnected(true);
   }
@@ -11,7 +11,7 @@ const Login = () => {
   const sendingEmail = () => {
     setEmailSent(true);
   }
-  
+
   return (
     <div>
       <div className="w-full md:h-full h-fit py-32 md:py-0 flex justify-center items-center">
@@ -21,7 +21,6 @@ const Login = () => {
         <div className="flex justify-center flex-col gap-5 items-center">
           <input type="text" disabled className="rounded-md bg-primary w-full h-12" />
           <div onClick={setConnection} className="px-8 py-2 bg-primary text-black rounded-md text-xl">Connect wallet</div>
-          {/* <div><ConnectButton /></div> */}
         </div>
         {isConnected &&
           <div className="py-10">
