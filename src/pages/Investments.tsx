@@ -71,6 +71,14 @@ const Investments = () => {
       args: [BigInt(poolId)],
     });
   };
+  const handleIncomeClaim = (amount: number) => {
+    writeContract({
+      abi: byForexConfig.abi,
+      address: byForexConfig.address as `0x${string}`,
+      functionName: 'withdraw',
+      args: [BigInt(amount)],
+    });
+  };
 
 
   const renderPackageSelection = () => (
@@ -105,6 +113,21 @@ const Investments = () => {
           </button>
         </div>
       ))}
+    </div>
+  );
+  const renderIncomeClaims = () => (
+    <div className="flex flex-col gap-3">
+      <div className=" bg-white w-full rounded-lg py-5 px-3 flex flex-col gap-5 ">
+        <div className="flex justify-between">
+          <p className="font-bold text-lg">Total income claim</p>
+          <p className="text-primary">${dashInfo?.totalIncomeClaim ? formatBigInt(dashInfo?.totalIncomeClaim) : 0}</p>
+        </div>
+        <div className="flex justify-between">
+          <p className="font-bold text-lg">Available income claim</p>
+          <p className="text-primary">${dashInfo?.availableIncomeClaim ? formatBigInt(dashInfo?.availableIncomeClaim) : 0}</p>
+        </div>
+        <div className="flex w-full justify-end"><button className="text-white text-xl font-semibold bg-primary w-fit py-1 px-4 rounded-md" onClick={() => { handleIncomeClaim(1) }}>Claim</button></div>
+      </div>
     </div>
   );
 
@@ -154,17 +177,7 @@ const Investments = () => {
 
         <div>
           <p className="text-2xl py-4 md:text-4xl text-white font-bold">Income claim</p>
-          <div className=" bg-white w-full rounded-lg py-5 px-3 flex flex-col gap-5 ">
-            <div className="flex justify-between">
-              <p className="font-bold text-lg">Total income claim</p>
-              <p className="text-primary">${dashInfo?.totalIncomeClaim ? formatBigInt(dashInfo?.totalIncomeClaim) : 0}</p>
-            </div>
-            <div className="flex justify-between">
-              <p className="font-bold text-lg">Available income claim</p>
-              <p className="text-primary">${dashInfo?.availableIncomeClaim ? formatBigInt(dashInfo?.availableIncomeClaim) : 0}</p>
-            </div>
-            <div className="flex w-full justify-end"><button className="text-white text-xl font-semibold bg-primary w-fit py-1 px-4 rounded-md">Claim</button></div>
-          </div>
+          {renderIncomeClaims()}
         </div>
 
         <div>
