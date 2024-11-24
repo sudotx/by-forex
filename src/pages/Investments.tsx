@@ -4,6 +4,22 @@ import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteCont
 import { byForexConfig } from "../../abi";
 
 const packages = [20, 40, 80, 160, 320, 640, 1280, 2560, 5120, 10240, 20480, 40960]
+const USDT_ADDRESS = '0x93323bB3896C5eff97320BC63E4FbccB41D0C8C4';
+
+interface DashboardInfo {
+  availableIncomeClaim: bigint;
+  poolsClaim: bigint[];
+  isPoolEligible: boolean[];
+  totalIncomeClaim: bigint;
+}
+
+// Format BigInt to regular number with commas
+const formatAmount = (amount: number) => {
+  return (Number(amount)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+const formatBigInt = (amount: number | bigint) => {
+  return (Number(amount) / 1e18).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
 
 const Investments = () => {
   const [isApproved, setIsApproved] = useState(false);
@@ -15,33 +31,18 @@ const Investments = () => {
       hash,
     })
 
-  interface DashboardInfo {
-    availableIncomeClaim: bigint;
-    poolsClaim: bigint[];
-    isPoolEligible: boolean[];
-    totalIncomeClaim: bigint;
-  }
-
   const { data: dashInfo } = useReadContract({
     abi: byForexConfig.abi,
     address: byForexConfig.address as `0x${string}`,
     functionName: 'getUserDashboardInfo',
     args: [address],
-  })
+  }) as { data: DashboardInfo }
 
-  if (!dashInfo) {
-    return
-  }
-  console.log("dash data", (dashInfo as DashboardInfo));
-  const availableIncomeClaim = (dashInfo as DashboardInfo)?.availableIncomeClaim
-  const poolsClaim = (dashInfo as DashboardInfo)?.poolsClaim
-  const isPoolEligible = (dashInfo as DashboardInfo)?.isPoolEligible
-  const totalIncomeClaim = (dashInfo as DashboardInfo)?.totalIncomeClaim
-
-  console.log("availableIncomeClaim", availableIncomeClaim);
-  console.log("poolsClaim", poolsClaim);
-  console.log("isPoolEligible", isPoolEligible);
-  console.log("totalIncomeClaim", totalIncomeClaim);
+  useEffect(() => {
+    if (error) {
+      console.log("Error:", error);
+    }
+  }, [error])
 
   const handleInvest = () => {
     writeContract({
@@ -54,7 +55,7 @@ const Investments = () => {
 
   const handleApprove = () => {
     writeContract({
-      address: '0x93323bB3896C5eff97320BC63E4FbccB41D0C8C4', // USDT Contract Address
+      address: USDT_ADDRESS, // USDT Contract Address
       abi: parseAbi(['function approve(address spender, uint256 amount)']),
       functionName: 'approve',
       args: [byForexConfig.address as `0x`, BigInt(investmentAmount * 1e18)],
@@ -71,35 +72,42 @@ const Investments = () => {
     });
   };
 
-  const handleRegister = (upLineAddress: string) => {
-    writeContract({
-      abi: byForexConfig.abi,
-      address: byForexConfig.address as `0x${string}`,
-      functionName: 'registerUser',
-      args: [upLineAddress],
-    });
-  };
 
-  // Format BigInt to regular number with commas
-  const formatAmount = (amount: number) => {
-    return (Number(amount)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
-  const formatBigInt = (amount: number | bigint) => {
-    return (Number(amount) / 1e18).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
+  const renderPackageSelection = () => (
+    <div className="w-full gap-2 justify-evenly flex flex-wrap">
+      {packages.map((item, index) => (
+        <p
+          key={index}
+          onClick={() => setInvestmentAmount(item)}
+          className={`text-black font-semibold p-4 cursor-pointer ${investmentAmount === item ? "bg-neutral-400" : "bg-gray-200"
+            }`}
+        >
+          ${item}
+        </p>
+      ))}
+    </div>
+  );
 
-  useEffect(() => {
-    if (error) {
-      console.log('Transaction error:', error);
-    }
-    console.log("Address", address);
-  }, [error]);
 
-  useEffect(() => {
-    if (isConnected) {
-      handleRegister(address as `0x${string}`)
-    }
-  }, [address]);
+  const renderPoolClaims = () => (
+    <div className="flex flex-col gap-3">
+      {[1, 2, 3, 4].map((poolId) => (
+        <div key={poolId} className="bg-neutral-200 flex justify-between p-2 rounded-lg">
+          <p className="text-lg font-semibold my-auto">Pool {poolId}</p>
+          <p className="text-primary">
+            ${dashInfo?.poolsClaim ? formatBigInt(dashInfo.poolsClaim[poolId - 1]) : 0}
+          </p>
+          <button
+            className="rounded-lg border-2 border-primary text-primary py-1 px-3 font-semibold"
+            onClick={() => handlePoolClaim(poolId)}
+          >
+            Claim
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+
 
   return (
     <div className="px-3 md:px-28 py-20 flex flex-col ">
@@ -120,45 +128,27 @@ const Investments = () => {
       <div className="flex gap-5 z-20 flex-col">
         <div>
           <p className="text-2xl py-4 md:text-4xl text-white font-bold">Investments</p>
-          <div className=" bg-white w-full rounded-lg py-5 px-3 flex flex-col gap-5 ">
-            <div className="w-full gap-2 justify-evenly flex flex-wrap">
-              {packages.map((item, index) => (
-                <p onClick={() => setInvestmentAmount(item)} key={index} className={`text-black font-semibold p-4 ${investmentAmount == item ? "bg-neutral-400" : "bg-gray-200"}`}>${item}</p>
-              ))}
-            </div>
+          <div className="bg-white w-full rounded-lg py-5 px-3 flex flex-col gap-5">
+            {renderPackageSelection()}
             <button
               onClick={!isApproved ? handleApprove : handleInvest}
               disabled={isConfirming || investmentAmount === 0}
-              className={`bg-primary w-full py-2 rounded-lg text-lg font-semibold text-white outline-none ${isConfirming ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`bg-primary w-full py-2 rounded-lg text-lg font-semibold text-white outline-none ${isConfirming ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
             >
-              {isConfirming ? 'Confirming...' : !isApproved ? `Approve ${formatAmount(investmentAmount)} USDT` : `Invest ${formatAmount(investmentAmount)} USDT`}
+              {isConfirming
+                ? 'Confirming...'
+                : !isApproved
+                  ? `Approve ${formatAmount(investmentAmount)} USDT`
+                  : `Invest ${formatAmount(investmentAmount)} USDT`}
             </button>
           </div>
         </div>
 
         <div>
           <p className="text-2xl py-4 md:text-4xl text-white font-bold">Pool Claim</p>
-          <div className=" bg-white w-full rounded-lg py-5 px-3 flex flex-col gap-3 ">
-            <div className="bg-neutral-200 flex justify-between p-2 rounded-lg">
-              <p className="text-lg font-semibold my-auto">Pool 1</p>
-              <p className="text-primary">${poolsClaim ? formatBigInt(poolsClaim[0]) : 0}</p>
-              <button className="rounded-lg border-2 border-primary text-primary py-1 px-3 font-semibold" onClick={() => { handlePoolClaim(1) }}>Claim</button>
-            </div>
-            <div className="bg-neutral-200 flex justify-between p-2 rounded-lg">
-              <p className="text-lg font-semibold my-auto">Pool 2</p>
-              <p className="text-primary">${poolsClaim ? formatBigInt(poolsClaim[1]) : 0}</p>
-              <button className="rounded-lg border-2 border-primary text-primary py-1 px-3 font-semibold" onClick={() => { handlePoolClaim(2) }}>Claim</button>
-            </div>
-            <div className="bg-neutral-200 flex justify-between p-2 rounded-lg">
-              <p className="text-lg font-semibold my-auto">Pool 3</p>
-              <p className="text-primary">${poolsClaim ? formatBigInt(poolsClaim[2]) : 0}</p>
-              <button className="rounded-lg border-2 border-primary text-primary py-1 px-3 font-semibold" onClick={() => { handlePoolClaim(3) }}>Claim</button>
-            </div>
-            <div className="bg-neutral-200 flex justify-between p-2 rounded-lg">
-              <p className="text-lg font-semibold my-auto">Pool 4</p>
-              <p className="text-primary">${poolsClaim ? formatBigInt(poolsClaim[3]) : 0}</p>
-              <button className="rounded-lg border-2 border-primary text-primary py-1 px-3 font-semibold" onClick={() => { handlePoolClaim(4) }}>Claim</button>
-            </div>
+          <div className="bg-white w-full rounded-lg py-5 px-3">
+            {renderPoolClaims()}
           </div>
         </div>
 
@@ -167,11 +157,11 @@ const Investments = () => {
           <div className=" bg-white w-full rounded-lg py-5 px-3 flex flex-col gap-5 ">
             <div className="flex justify-between">
               <p className="font-bold text-lg">Total income claim</p>
-              <p className="text-primary">${totalIncomeClaim ? formatBigInt(totalIncomeClaim) : 0}</p>
+              <p className="text-primary">${dashInfo?.totalIncomeClaim ? formatBigInt(dashInfo?.totalIncomeClaim) : 0}</p>
             </div>
             <div className="flex justify-between">
               <p className="font-bold text-lg">Available income claim</p>
-              <p className="text-primary">${availableIncomeClaim ? formatBigInt(availableIncomeClaim) : 0}</p>
+              <p className="text-primary">${dashInfo?.availableIncomeClaim ? formatBigInt(dashInfo?.availableIncomeClaim) : 0}</p>
             </div>
             <div className="flex w-full justify-end"><button className="text-white text-xl font-semibold bg-primary w-fit py-1 px-4 rounded-md">Claim</button></div>
           </div>
@@ -184,12 +174,12 @@ const Investments = () => {
               <div
                 className="w-full border-2 rounded-md border-black h-12 text-lg text-center outline-none font-semibold flex items-center justify-center"
               >
-                {`${'byForex.app'}?ref=${address?.slice(0, 4)}...${address?.slice(-4)}`}
+                {`${'byForex.app'}/register/${address?.slice(0, 4)}...${address?.slice(-4)}`}
               </div>
             </div>
             <div className="flex w-full justify-end">
               <button
-                onClick={() => navigator.clipboard.writeText(`${"byForex.app"}?ref=${address}`)}
+                onClick={() => navigator.clipboard.writeText(`${"byForex.app"}/register/${address}`)}
                 className="text-white text-xl font-semibold bg-primary w-full md:w-fit py-2 px-4 rounded-md"
               >
                 Copy
