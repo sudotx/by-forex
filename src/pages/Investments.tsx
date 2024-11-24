@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { parseAbi } from "viem";
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { byForexConfig } from "../../abi";
+import toast from 'react-hot-toast';
 
 const packages = [20, 40, 80, 160, 320, 640, 1280, 2560, 5120, 10240, 20480, 40960]
 const USDT_ADDRESS = '0x93323bB3896C5eff97320BC63E4FbccB41D0C8C4';
@@ -44,6 +45,24 @@ const Investments = () => {
     }
   }, [error])
 
+  useEffect(() => {
+    if (hash) {
+      toast.success(
+        <div>
+          Transaction sent!
+          <a
+            href={`https://testnet.bscscan.com/tx/${hash}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 underline ml-1"
+          >
+            View on BscScan
+          </a>
+        </div>
+      );
+    }
+  }, [hash]);
+
   const handleInvest = () => {
     writeContract({
       abi: byForexConfig.abi,
@@ -80,58 +99,6 @@ const Investments = () => {
     });
   };
 
-
-  const renderPackageSelection = () => (
-    <div className="w-full gap-2 justify-evenly flex flex-wrap">
-      {packages.map((item, index) => (
-        <p
-          key={index}
-          onClick={() => setInvestmentAmount(item)}
-          className={`text-black font-semibold p-4 cursor-pointer ${investmentAmount === item ? "bg-neutral-400" : "bg-gray-200"
-            }`}
-        >
-          ${item}
-        </p>
-      ))}
-    </div>
-  );
-
-
-  const renderPoolClaims = () => (
-    <div className="flex flex-col gap-3">
-      {[1, 2, 3, 4].map((poolId) => (
-        <div key={poolId} className="bg-neutral-200 flex justify-between p-2 rounded-lg">
-          <p className="text-lg font-semibold my-auto">Pool {poolId}</p>
-          <p className="text-primary">
-            ${dashInfo?.poolsClaim ? formatBigInt(dashInfo.poolsClaim[poolId - 1]) : 0}
-          </p>
-          <button
-            className="rounded-lg border-2 border-primary text-primary py-1 px-3 font-semibold"
-            onClick={() => handlePoolClaim(poolId)}
-          >
-            Claim
-          </button>
-        </div>
-      ))}
-    </div>
-  );
-  const renderIncomeClaims = () => (
-    <div className="flex flex-col gap-3">
-      <div className=" bg-white w-full rounded-lg py-5 px-3 flex flex-col gap-5 ">
-        <div className="flex justify-between">
-          <p className="font-bold text-lg">Total income claim</p>
-          <p className="text-primary">${dashInfo?.totalIncomeClaim ? formatBigInt(dashInfo?.totalIncomeClaim) : 0}</p>
-        </div>
-        <div className="flex justify-between">
-          <p className="font-bold text-lg">Available income claim</p>
-          <p className="text-primary">${dashInfo?.availableIncomeClaim ? formatBigInt(dashInfo?.availableIncomeClaim) : 0}</p>
-        </div>
-        <div className="flex w-full justify-end"><button className="text-white text-xl font-semibold bg-primary w-fit py-1 px-4 rounded-md" onClick={() => { handleIncomeClaim(1) }}>Claim</button></div>
-      </div>
-    </div>
-  );
-
-
   return (
     <div className="px-3 md:px-28 py-20 flex flex-col ">
       <div className="h-screen w-full fixed top-0 left-0 flex justify-center flex-col items-center">
@@ -152,7 +119,18 @@ const Investments = () => {
         <div>
           <p className="text-2xl py-4 md:text-4xl text-white font-bold">Investments</p>
           <div className="bg-white w-full rounded-lg py-5 px-3 flex flex-col gap-5">
-            {renderPackageSelection()}
+            <div className="w-full gap-2 justify-evenly flex flex-wrap">
+              {packages.map((item, index) => (
+                <p
+                  key={index}
+                  onClick={() => setInvestmentAmount(item)}
+                  className={`text-black font-semibold p-4 cursor-pointer ${investmentAmount === item ? "bg-neutral-400" : "bg-gray-200"
+                    }`}
+                >
+                  ${item}
+                </p>
+              ))}
+            </div>
             <button
               onClick={!isApproved ? handleApprove : handleInvest}
               disabled={isConfirming || investmentAmount === 0}
@@ -171,13 +149,40 @@ const Investments = () => {
         <div>
           <p className="text-2xl py-4 md:text-4xl text-white font-bold">Pool Claim</p>
           <div className="bg-white w-full rounded-lg py-5 px-3">
-            {renderPoolClaims()}
+            <div className="flex flex-col gap-3">
+              {[1, 2, 3, 4].map((poolId) => (
+                <div key={poolId} className="bg-neutral-200 flex justify-between p-2 rounded-lg">
+                  <p className="text-lg font-semibold my-auto">Pool {poolId}</p>
+                  <p className="text-primary">
+                    ${dashInfo?.poolsClaim ? formatBigInt(dashInfo.poolsClaim[poolId - 1]) : 0}
+                  </p>
+                  <button
+                    className="rounded-lg border-2 border-primary text-primary py-1 px-3 font-semibold"
+                    onClick={() => handlePoolClaim(poolId)}
+                  >
+                    Claim
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
         <div>
           <p className="text-2xl py-4 md:text-4xl text-white font-bold">Income claim</p>
-          {renderIncomeClaims()}
+          <div className="flex flex-col gap-3">
+            <div className=" bg-white w-full rounded-lg py-5 px-3 flex flex-col gap-5 ">
+              <div className="flex justify-between">
+                <p className="font-bold text-lg">Total income claim</p>
+                <p className="text-primary">${dashInfo?.totalIncomeClaim ? formatBigInt(dashInfo?.totalIncomeClaim) : 0}</p>
+              </div>
+              <div className="flex justify-between">
+                <p className="font-bold text-lg">Available income claim</p>
+                <p className="text-primary">${dashInfo?.availableIncomeClaim ? formatBigInt(dashInfo?.availableIncomeClaim) : 0}</p>
+              </div>
+              <div className="flex w-full justify-end"><button className="text-white text-xl font-semibold bg-primary w-fit py-1 px-4 rounded-md" onClick={() => { handleIncomeClaim(1) }}>Claim</button></div>
+            </div>
+          </div>
         </div>
 
         <div>
