@@ -1,5 +1,6 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
 import { useAccount, useDisconnect, useReadContract, useWriteContract } from "wagmi";
 import { byForexConfig } from "../../abi";
@@ -23,13 +24,11 @@ type UserInfo = [
   bigint     // poolEarnings
 ]
 
-
 const Navbar = () => {
   const { address: referralAddress } = useParams();
   const { isConnected, address } = useAccount();
   const { disconnect } = useDisconnect();
-
-  const { writeContract } = useWriteContract();
+  const { data: hash, writeContract, error } = useWriteContract()
 
   const handleRegister = (upLineAddress: string) => {
     writeContract({
@@ -47,17 +46,38 @@ const Navbar = () => {
     args: [address],
   }) as { data: UserInfo }
 
-  console.log("user wallet address", userInfo[0]);
-
   useEffect(() => {
-    if (isConnected && referralAddress && isValidAddress(referralAddress) && userInfo[0] === "0x0000000000000000000000000000000000000000") {
+    if (userInfo[0] != "0x0000000000000000000000000000000000000000") {
+      return
+    }
+    if (isConnected && referralAddress && isValidAddress(referralAddress)) {
       handleRegister(referralAddress as `0x${string}`);
     }
   }, [isConnected, referralAddress]);
 
   useEffect(() => {
-    console.log("Wallet connected", isConnected);
-  }, []);
+    if (hash) {
+      toast.success(
+        <div>
+          Transaction sent!
+          <a
+            href={`https://testnet.bscscan.com/tx/${hash}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 underline ml-1"
+          >
+            View on BscScan
+          </a>
+        </div>
+      );
+    }
+  }, [hash]);
+
+  useEffect(() => {
+    if (error) {
+      console.log("Error:", error)
+    }
+  }, [error])
 
   return (
     <div className="fixed top-0 w-full flex justify-between py-2 px-3 md:py-10 md:px-28 backdrop-blur-md z-40">
