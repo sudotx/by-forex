@@ -24,7 +24,7 @@ const formatBigInt = (amount: number | bigint) => {
 const Investments = () => {
   const [isApproved, setIsApproved] = useState(false);
   const [investmentAmount, setInvestmentAmount] = useState(0);
-  const { address, isConnected } = useAccount()
+  const { address } = useAccount()
   const { data: hash, writeContract, error } = useWriteContract()
   const { isLoading: isConfirming } =
     useWaitForTransactionReceipt({
