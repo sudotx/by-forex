@@ -24,7 +24,7 @@ const formatBigInt = (amount: number | bigint) => {
 const Investments = () => {
   const [isApproved, setIsApproved] = useState(false);
   const [investmentAmount, setInvestmentAmount] = useState(0);
-  const { address, isConnected } = useAccount()
+  const { address } = useAccount()
   const { data: hash, writeContract, error } = useWriteContract()
   const { isLoading: isConfirming } =
     useWaitForTransactionReceipt({
@@ -55,7 +55,7 @@ const Investments = () => {
 
   const handleApprove = () => {
     writeContract({
-      address: USDT_ADDRESS, // USDT Contract Address
+      address: USDT_ADDRESS,
       abi: parseAbi(['function approve(address spender, uint256 amount)']),
       functionName: 'approve',
       args: [byForexConfig.address as `0x`, BigInt(investmentAmount * 1e18)],
