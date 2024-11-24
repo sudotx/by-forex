@@ -1,15 +1,15 @@
 import { useEffect } from "react";
 import { useAccount, useWriteContract } from "wagmi";
 import { byForexConfig } from "../../abi";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const Register = () => {
-    const [searchParams] = useSearchParams();
+    const { address: referralAddress } = useParams();
     const navigate = useNavigate();
     const { isConnected } = useAccount();
     const { writeContract } = useWriteContract();
 
-    const referralAddress = searchParams.get("ref");
+    // const referralAddress = searchParams.get("ref");
 
     const handleRegister = (upLineAddress: string) => {
         writeContract({
@@ -20,8 +20,12 @@ const Register = () => {
         });
     };
 
+    const isValidAddress = (address: string | undefined): boolean => {
+        return /^0x[a-fA-F0-9]{40}$/.test(address || '');
+    };
+
     useEffect(() => {
-        if (isConnected && referralAddress) {
+        if (isConnected && referralAddress && isValidAddress(referralAddress)) {
             handleRegister(referralAddress as `0x${string}`);
             navigate("/investments");
         }
