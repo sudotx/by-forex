@@ -12,6 +12,7 @@ const Home = () => {
   const goDashboard = () => {
     navigate('/investments')
   }
+  // register page
   const goRegister = () => {
     navigate('/register')
   }
