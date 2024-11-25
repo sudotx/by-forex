@@ -1,7 +1,7 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import jwt from 'jsonwebtoken';
 import { useEffect } from "react";
 import toast from "react-hot-toast";
+import { useParams } from "react-router-dom";
 import { useAccount, useDisconnect, useReadContract, useWriteContract } from "wagmi";
 import { byForexConfig } from "../../abi";
 
@@ -25,25 +25,21 @@ type UserInfo = [
 ]
 
 const Navbar = () => {
+  const { address: referralAddress } = useParams();
   const { isConnected, address } = useAccount();
   const { disconnect } = useDisconnect();
   const { data: hash, writeContract, error } = useWriteContract()
 
-  const handleRegister = (token: string) => {
+  const handleRegister = () => {
+    if (!isValidAddress(referralAddress)) {
+      return
+    }
     try {
-      const decoded = jwt.verify(token, 'your-secret-key');
-
-      if (!isValidAddress("decoded.address")) {
-        toast.error('Invalid or expired referral link');
-        return;
-      }
-
-      console.log("decoded", decoded);
       writeContract({
         abi: byForexConfig.abi,
         address: byForexConfig.address as `0x${string}`,
         functionName: "registerUser",
-        args: [decoded],
+        args: [referralAddress],
       });
     } catch (err) {
       toast.error('Invalid or expired referral link');
@@ -60,7 +56,7 @@ const Navbar = () => {
   useEffect(() => {
     const token = window.location.pathname.split('/register/')[1];
     if (userInfo && userInfo[0] === "0x0000000000000000000000000000000000000000" && token) {
-      handleRegister(token);
+      handleRegister();
     }
   }, [userInfo]);
 

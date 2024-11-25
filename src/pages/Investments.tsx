@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
+import toast from 'react-hot-toast';
+import { v4 as uuidv4 } from 'uuid';
 import { parseAbi } from "viem";
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { byForexConfig } from "../../abi";
-import toast from 'react-hot-toast';
-import { v4 as uuidv4 } from 'uuid';
-import jwt from 'jsonwebtoken';
 
 const packages = [20, 40, 80, 160, 320, 640, 1280, 2560, 5120, 10240, 20480, 40960]
 const USDT_ADDRESS = '0x93323bB3896C5eff97320BC63E4FbccB41D0C8C4';
@@ -23,8 +22,6 @@ const formatAmount = (amount: number) => {
 const formatBigInt = (amount: number | bigint) => {
   return (Number(amount) / 1e18).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
-
-
 
 const Investments = () => {
   const [isApproved, setIsApproved] = useState(false);
@@ -45,16 +42,7 @@ const Investments = () => {
 
   const generateReferralLink = () => {
     const uniqueId = uuidv4();
-    const token = jwt.sign(
-      {
-        address: address,
-        uniqueId
-      },
-      'your-secret-key',  // Store this in env
-      { expiresIn: '2h' }
-    );
-
-    return `byForex.app/${token}`;
+    return `byForex.app/${uniqueId}/${address}`;
   };
 
   useEffect(() => {
