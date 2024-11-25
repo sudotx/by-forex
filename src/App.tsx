@@ -2,6 +2,7 @@ import { RouterProvider } from 'react-router-dom'
 import './App.css'
 import { route } from './utils/routes'
 import Navbar from './components/Navbar'
+import { Toaster } from 'react-hot-toast'
 
 function App() {
 
@@ -9,6 +10,7 @@ function App() {
     <>
       <Navbar />
       <RouterProvider router={route} />
+      <Toaster />
     </>
   )
 }

@@ -22,6 +22,21 @@ const formatBigInt = (amount: number | bigint) => {
   return (Number(amount) / 1e18).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
+type UserInfo = [
+  string,    // walletAddress
+  bigint,    // currentPackageLevel
+  bigint,    // totalInvestment  
+  bigint,    // directBusinessVolume
+  bigint,    // directReferralCount
+  string,    // upline
+  bigint,    // totalEarnings
+  boolean,   // isRegistered
+  bigint,    // totalWithdrawal
+  bigint,    // highestPackage
+  bigint,    // totalBalance
+  bigint     // poolEarnings
+]
+
 const Investments = () => {
   const [isApproved, setIsApproved] = useState(false);
   const [investmentAmount, setInvestmentAmount] = useState(0);
@@ -40,13 +55,21 @@ const Investments = () => {
     args: [address],
   }) as { data: DashboardInfo }
 
+  const { data: userInfo } = useReadContract({
+    abi: byForexConfig.abi,
+    address: byForexConfig.address as `0x${string}`,
+    functionName: 'users',
+    args: [address],
+  }) as { data: UserInfo }
+
   const generateReferralLink = () => {
     return `byForex.app/register/${address}`;
   };
 
   useEffect(() => {
     if (error) {
-      console.log("Error:", error);
+      console.log(error);
+      toast.error("Error: " + error.message);
     }
   }, [error])
 
@@ -135,6 +158,7 @@ const Investments = () => {
                   ${item}
                 </p>
               ))}
+              <p>{userInfo ? formatBigInt(userInfo[2]) : 0}</p>
             </div>
             <button
               onClick={!isApproved ? handleApprove : handleInvest}
