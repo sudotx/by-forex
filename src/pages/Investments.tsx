@@ -3,6 +3,8 @@ import { parseAbi } from "viem";
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { byForexConfig } from "../../abi";
 import toast from 'react-hot-toast';
+import { v4 as uuidv4 } from 'uuid';
+import jwt from 'jsonwebtoken';
 
 const packages = [20, 40, 80, 160, 320, 640, 1280, 2560, 5120, 10240, 20480, 40960]
 const USDT_ADDRESS = '0x93323bB3896C5eff97320BC63E4FbccB41D0C8C4';
@@ -22,6 +24,8 @@ const formatBigInt = (amount: number | bigint) => {
   return (Number(amount) / 1e18).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
+
+
 const Investments = () => {
   const [isApproved, setIsApproved] = useState(false);
   const [investmentAmount, setInvestmentAmount] = useState(0);
@@ -38,6 +42,20 @@ const Investments = () => {
     functionName: 'getUserDashboardInfo',
     args: [address],
   }) as { data: DashboardInfo }
+
+  const generateReferralLink = () => {
+    const uniqueId = uuidv4();
+    const token = jwt.sign(
+      {
+        address: address,
+        uniqueId
+      },
+      'your-secret-key',  // Store this in env
+      { expiresIn: '2h' }
+    );
+
+    return `byForex.app/${token}`;
+  };
 
   useEffect(() => {
     if (error) {
@@ -189,15 +207,13 @@ const Investments = () => {
           <p className="text-2xl py-4 md:text-4xl text-white font-bold">Referral link</p>
           <div className=" bg-white w-full rounded-lg py-5 px-3 flex flex-col md:flex-row gap-5 ">
             <div className="w-full">
-              <div
-                className="w-full border-2 rounded-md border-black h-12 text-lg text-center outline-none font-semibold flex items-center justify-center"
-              >
-                {`${'byForex.app'}/register/${address?.slice(0, 4)}...${address?.slice(-4)}`}
+              <div className="w-full border-2 rounded-md border-black h-12 text-lg text-center outline-none font-semibold flex items-center justify-center">
+                {generateReferralLink()}
               </div>
             </div>
             <div className="flex w-full justify-end">
               <button
-                onClick={() => navigator.clipboard.writeText(`${"byForex.app"}/register/${address}`)}
+                onClick={() => navigator.clipboard.writeText(generateReferralLink())}
                 className="text-white text-xl font-semibold bg-primary w-full md:w-fit py-2 px-4 rounded-md"
               >
                 Copy
