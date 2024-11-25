@@ -108,6 +108,9 @@ const Investments = () => {
       args: [byForexConfig.address as `0x`, BigInt(investmentAmount * 1e18)],
     })
     setIsApproved(true);
+    if(isApproved){
+      location.reload();
+    }
   }
 
   const handlePoolClaim = (poolId: number) => {
@@ -158,7 +161,11 @@ const Investments = () => {
                   ${item}
                 </p>
               ))}
-              <p>{userInfo ? formatBigInt(userInfo[2]) : 0}</p>
+              
+            </div>
+            <div className="flex bg-neutral-200 rounded-md p-2 justify-between">
+              <p>Total investments</p>
+              <p className="text-primary">{userInfo ? formatBigInt(userInfo[2]) : 0}</p>
             </div>
             <button
               onClick={!isApproved ? handleApprove : handleInvest}
@@ -218,9 +225,10 @@ const Investments = () => {
           <p className="text-2xl py-4 md:text-4xl text-white font-bold">Referral link</p>
           <div className=" bg-white w-full rounded-lg py-5 px-3 flex flex-col md:flex-row gap-5 ">
             <div className="w-full">
-              <div className="w-full border-2 rounded-md border-black h-12 text-lg text-center outline-none font-semibold flex items-center justify-center">
+              {/* <div className="w-full border-2 rounded-md border-black h-12 text-lg text-center outline-none font-semibold flex items-center justify-center">
                 {generateReferralLink()}
-              </div>
+              </div> */}
+              <input type="text" className="h-12 border-2  border-black rounded-lg w-full px-3 text-center font-semibold" value={generateReferralLink()} />
             </div>
             <div className="flex w-full justify-end">
               <button

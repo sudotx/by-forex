@@ -1,6 +1,7 @@
-import { ConnectButton } from "@rainbow-me/rainbowkit"
-import { Packakges } from "../utils/constants"
-import PackageCard from "../components/PackageCard"
+// import { ConnectButton } from "@rainbow-me/rainbowkit"
+// import { Packakges } from "../utils/constants"
+// import PackageCard from "../components/PackageCard"
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom"
 import { useAccount } from "wagmi"
 
@@ -10,12 +11,15 @@ const Home = () => {
   const { isConnected } = useAccount();
 
   const goDashboard = () => {
+    if(!isConnected) {
+      return toast.error('Please connect your wallet to continue');
+    }
     navigate('/investments')
   }
   // register page
-  const goRegister = () => {
-    navigate('/register')
-  }
+  // const goRegister = () => {
+  //   navigate('/register')
+  // }
 
   return (
     <div>
@@ -46,7 +50,7 @@ const Home = () => {
         </div>
 
         {/* ========= PACKAGES ======== */}
-        <div className="py-5">
+        {/* <div className="py-5">
           <p className="text-2xl py-1 text-white font-bold">Packakges</p>
           <div className="w-full package overflow-x-scroll">
             <div className="flex gap-5 py-4 w-full px-2">
@@ -61,7 +65,7 @@ const Home = () => {
               }
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* ========= FOOTER ======== */}
         <div className="flex w-full text-center absolute bottom-0 left-0 justify-center">

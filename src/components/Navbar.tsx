@@ -5,9 +5,9 @@ import { useParams } from "react-router-dom";
 import { useAccount, useDisconnect, useReadContract, useWriteContract } from "wagmi";
 import { byForexConfig } from "../../abi";
 
-const isValidAddress = (address: string | undefined): boolean => {
-  return /^0x[a-fA-F0-9]{40}$/.test(address || '');
-};
+// const isValidAddress = (address: string | undefined): boolean => {
+//   return /^0x[a-fA-F0-9]{40}$/.test(address || '');
+// };
 
 type UserInfo = [
   string,    // walletAddress
@@ -50,6 +50,7 @@ const Navbar = () => {
   }) as { data: UserInfo }
 
   useEffect(() => {
+    console.log(referralAddress)
     if (!isConnected) {
       return;
     }
