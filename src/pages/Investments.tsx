@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import toast from 'react-hot-toast';
-import { v4 as uuidv4 } from 'uuid';
 import { parseAbi } from "viem";
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { byForexConfig } from "../../abi";
@@ -26,6 +25,7 @@ const formatBigInt = (amount: number | bigint) => {
 const Investments = () => {
   const [isApproved, setIsApproved] = useState(false);
   const [investmentAmount, setInvestmentAmount] = useState(0);
+  const [packageId, setPackageId] = useState(0);
   const { address } = useAccount()
   const { data: hash, writeContract, error } = useWriteContract()
   const { isLoading: isConfirming } =
@@ -41,8 +41,7 @@ const Investments = () => {
   }) as { data: DashboardInfo }
 
   const generateReferralLink = () => {
-    const uniqueId = uuidv4();
-    return `byForex.app/${uniqueId}/${address}`;
+    return `byForex.app/register/${address}`;
   };
 
   useEffect(() => {
@@ -74,7 +73,7 @@ const Investments = () => {
       abi: byForexConfig.abi,
       address: byForexConfig.address as `0x${string}`,
       functionName: 'invest',
-      args: [BigInt(investmentAmount), BigInt(investmentAmount * 1e18)],
+      args: [BigInt(packageId), BigInt(investmentAmount * 1e18)],
     });
   };
 
@@ -129,7 +128,7 @@ const Investments = () => {
               {packages.map((item, index) => (
                 <p
                   key={index}
-                  onClick={() => setInvestmentAmount(item)}
+                  onClick={() => { setInvestmentAmount(item); setPackageId(index + 1); }}
                   className={`text-black font-semibold p-4 cursor-pointer ${investmentAmount === item ? "bg-neutral-400" : "bg-gray-200"
                     }`}
                 >

@@ -42,8 +42,6 @@ const Home = () => {
           </p>
           <div className="flex w-full justify-center gap-3 py-3">
             <button onClick={goDashboard} className="text-primary border-2 scale-[1.01] rounded-full px-8 py-2 border-primary">Investments</button>
-            <button onClick={goRegister} className="text-primary border-2 scale-[1.01] rounded-full px-8 py-2 border-primary">Register</button>
-            {!isConnected && <ConnectButton />}
           </div>
         </div>
 

@@ -31,19 +31,15 @@ const Navbar = () => {
   const { data: hash, writeContract, error } = useWriteContract()
 
   const handleRegister = () => {
-    if (!isValidAddress(referralAddress)) {
-      return
-    }
-    try {
-      writeContract({
-        abi: byForexConfig.abi,
-        address: byForexConfig.address as `0x${string}`,
-        functionName: "registerUser",
-        args: [referralAddress],
-      });
-    } catch (err) {
-      toast.error('Invalid or expired referral link');
-    }
+    // if (!isValidAddress(referralAddress)) {
+    //   return
+    // }
+    writeContract({
+      abi: byForexConfig.abi,
+      address: byForexConfig.address as `0x${string}`,
+      functionName: "registerUser",
+      args: ["0x7b49660dc6F25326d2fA7C3CD67970dF73eB5Ec1"], // admin line
+    });
   };
 
   const { data: userInfo } = useReadContract({
@@ -54,8 +50,10 @@ const Navbar = () => {
   }) as { data: UserInfo }
 
   useEffect(() => {
-    const token = window.location.pathname.split('/register/')[1];
-    if (userInfo && userInfo[0] === "0x0000000000000000000000000000000000000000" && token) {
+    if (!isConnected) {
+      return;
+    }
+    if (userInfo && userInfo[0] === "0x0000000000000000000000000000000000000000") {
       handleRegister();
     }
   }, [userInfo]);
@@ -63,6 +61,7 @@ const Navbar = () => {
 
   useEffect(() => {
     if (hash) {
+      console.log("Transaction hash:", hash);
       toast.success(
         <div>
           Transaction sent!
@@ -81,7 +80,7 @@ const Navbar = () => {
 
   useEffect(() => {
     if (error) {
-      console.log("Error:", error)
+      toast.error(error.message)
     }
   }, [error])
 
