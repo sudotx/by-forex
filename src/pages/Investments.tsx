@@ -108,7 +108,7 @@ const Investments = () => {
       args: [byForexConfig.address as `0x`, BigInt(investmentAmount * 1e18)],
     })
     setIsApproved(true);
-    if(isApproved){
+    if (isApproved) {
       location.reload();
     }
   }
@@ -161,11 +161,11 @@ const Investments = () => {
                   ${item}
                 </p>
               ))}
-              
+
             </div>
             <div className="flex bg-neutral-200 rounded-md p-2 justify-between">
               <p>Total investments</p>
-              <p className="text-primary">{userInfo ? formatBigInt(userInfo[2]) : 0}</p>
+              <p className="text-primary">${userInfo ? formatBigInt(userInfo[2]) : 0}</p>
             </div>
             <button
               onClick={!isApproved ? handleApprove : handleInvest}
