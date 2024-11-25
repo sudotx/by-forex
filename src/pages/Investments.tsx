@@ -24,8 +24,6 @@ const formatBigInt = (amount: number | bigint) => {
   return (Number(amount) / 1e18).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
-
-
 const Investments = () => {
   const [isApproved, setIsApproved] = useState(false);
   const [investmentAmount, setInvestmentAmount] = useState(0);
